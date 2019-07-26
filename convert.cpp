@@ -54,7 +54,7 @@ void makeHexArray(string filename, vector<unsigned int> numbers) {
 
     string text = "/* This file is generated. DO NOT EDIT!\n\n";
     text += "The byte array encodes a dictionary of strings and values. See ";
-    text += "make_dafsa.py for documentation.";
+    text += "convert.cpp/make_dafsa.py for documentation.";
     text += "*/\n\n";
     text +=
         "const unsigned char kDafsa[" + to_string(numbers.size()) + "] = {\n";
