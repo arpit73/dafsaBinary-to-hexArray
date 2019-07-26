@@ -17,7 +17,7 @@ unsigned int entriesCount(string fileName) {
         size = myFile.tellg();
         myFile.seekg(0, myFile.beg);
     } else {
-        cout << "Unable to open file";
+        cout << "Could not open file.";
     }
     myFile.close();
     return size;
@@ -33,7 +33,7 @@ vector<unsigned int> readDafsaBinary(string fileName) {
         myFile.read(&buffer[0], length);
 
     } else {
-        cout << "Unable to open file";
+        cout << "Could not open file.";
     }
 
     // Casting characters to unsigned int as observed in make_dafsa.py
