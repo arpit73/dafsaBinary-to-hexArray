@@ -21,27 +21,27 @@ unsigned int entriesCount(string fileName) {
     myFile.close();
     return size;
 }
+
 vector<char> readDafsaBinary(string fileName) {
     unsigned int length = entriesCount(fileName);
     vector<char> buffer(length, 0);
     ifstream myFile(fileName, ios::binary);
     if (myFile.is_open()) {
         myFile.read(&buffer[0], length);
-        myFile.close();
+
     } else {
         cout << "Unable to open file";
     }
+    myFile.close();
     return buffer;
 }
 
-int main() {
-    vector<char> buffer = readDafsaBinary("input.bin");
+void makeHexArray(vector<char> buffer) {
     ofstream outfile("out.inc");
-
     vector<unsigned int> nums;
 
-    for (auto val = buffer.begin(); val != buffer.end(); ++val) {
-        unsigned int num = (unsigned char)(*val);
+    for (auto buf : buffer) {
+        unsigned int num = (unsigned char)(buf);
         nums.push_back(num);
     }
 
@@ -50,16 +50,29 @@ int main() {
     text += "make_dafsa.py for documentation.";
     text += "*/\n\n";
     text += "const unsigned char kDafsa[" + to_string(nums.size()) + "] = {\n";
-    for (int num : nums) {
+
+    int formatCount = 1;
+    for (auto num : nums) {
         text += "  ";
         stringstream stream;
         stream << setfill('0') << setw(2) << hex << num;
         text += "0x" + stream.str();
-        text += ",\n";
+        if (formatCount % 12 == 0) {
+            text += ",\n";
+        } else {
+            text += ",";
+        }
+        ++formatCount;
     }
     text += "\n";
     text += "};\n";
+
     outfile << text;
     outfile.close();
+}
+
+int main() {
+    vector<char> buffer = readDafsaBinary("input.bin");
+    makeHexArray(buffer);
     return 0;
 }
