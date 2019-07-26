@@ -1,39 +1,65 @@
-#include <iostream>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
 #include <vector>
 
 using namespace std;
 
-int main()
-{
-    vector<char> buffer(37837, 0);
-    int length = 0;
-    ifstream myfile("input.bin", ios::binary | ios::ate);
-    if (myfile.is_open())
-    {
-        myfile.seekg(0, myfile.end);
-        length = myfile.tellg();
-        myfile.seekg(0, myfile.beg);
+unsigned int entriesCount(string fileName) {
+    unsigned int size = 0;
+    ifstream myFile(fileName, ios::binary);
 
-        cout << "Reading " << length << " characters... ";
-        // read data as a block:
-        myfile.read(&buffer[0], length);
-
-        if (myfile)
-            cout << "all characters read successfully." << endl;
-        else
-            cout << "error: only " << myfile.gcount() << " could be read";
-        myfile.close();
-    }
-    else
+    if (myFile.is_open()) {
+        // Find the number of values in the file
+        myFile.seekg(0, myFile.end);
+        size = myFile.tellg();
+        myFile.seekg(0, myFile.beg);
+    } else {
         cout << "Unable to open file";
-
-    ofstream outfile("out.inc");
-    for (auto val = buffer.begin(); val != buffer.end(); ++val)
-    {
-        unsigned int num = (unsigned char)(*val);
-        outfile << num << '\n';
     }
+    myFile.close();
+    return size;
+}
+vector<char> readDafsaBinary(string fileName) {
+    unsigned int length = entriesCount(fileName);
+    vector<char> buffer(length, 0);
+    ifstream myFile(fileName, ios::binary);
+    if (myFile.is_open()) {
+        myFile.read(&buffer[0], length);
+        myFile.close();
+    } else {
+        cout << "Unable to open file";
+    }
+    return buffer;
+}
+
+int main() {
+    vector<char> buffer = readDafsaBinary("input.bin");
+    ofstream outfile("out.inc");
+
+    vector<unsigned int> nums;
+
+    for (auto val = buffer.begin(); val != buffer.end(); ++val) {
+        unsigned int num = (unsigned char)(*val);
+        nums.push_back(num);
+    }
+
+    string text = "/* This file is generated. DO NOT EDIT!\n\n";
+    text += "The byte array encodes a dictionary of strings and values. See ";
+    text += "make_dafsa.py for documentation.";
+    text += "*/\n\n";
+    text += "const unsigned char kDafsa[" + to_string(nums.size()) + "] = {\n";
+    for (int num : nums) {
+        text += "  ";
+        stringstream stream;
+        stream << setfill('0') << setw(2) << hex << num;
+        text += "0x" + stream.str();
+        text += ",\n";
+    }
+    text += "\n";
+    text += "};\n";
+    outfile << text;
     outfile.close();
     return 0;
 }
