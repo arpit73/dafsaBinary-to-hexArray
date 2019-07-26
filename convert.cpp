@@ -9,13 +9,10 @@ using namespace std;
 // Find the number of entries to be created in the array
 unsigned int entriesCount(string fileName) {
     unsigned int size = 0;
-    ifstream myFile(fileName, ios::binary);
+    ifstream myFile(fileName, ios::binary | ios::ate);
 
     if (myFile.is_open()) {
-        // Find the number of values in the file
-        myFile.seekg(0, myFile.end);
         size = myFile.tellg();
-        myFile.seekg(0, myFile.beg);
     } else {
         cout << "Could not open file.";
     }
