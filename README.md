@@ -1,8 +1,9 @@
 ### Introduction
 
+This project aims to use the generated binary file to reverse the packing and generate a C++ array of hexadecimal numbers.
+
 [make_dafsa.py](https://searchfox.org/mozilla-central/source/xpcom/ds/tools/make_dafsa.py) in conjunction with [prepare_tlds.py](https://searchfox.org/mozilla-central/source/netwerk/dns/prepare_tlds.py) is used to generate a [C++ hex array](https://searchfox.org/mozilla-central/source/__GENERATED__/netwerk/dns/etld_data.inc) when running in firefox build system and a binary file when running with remote-settings-lambdas server.
 
-This project aims to use the generated binary file to reverse the packing and generate a C++ array of hexadecimal numbers.
 
 #### How to run
 
